@@ -17,7 +17,7 @@ If you are developing a production application, we recommend using TypeScript wi
 
 
 
-For Team 15:
+For Team 15 (IGNORE EVERYTHING ELSE ABOVE):
 If you are wanting to do development on the website here are the steps.
 1. Have Docker Desktop downloaded on your computer. You DON'T need to make an account.
 2. Clone the repo of the sanitrack website.
@@ -29,5 +29,8 @@ How to stop the Docker from running:
 
 1. Run: docker compose down
 2. That's it. Also reminder, all of these commands should be done in the terminal, and if you're on windows (Tony), I recommond doing all of this in WSL.
+
+
+If you want to run the hot reload version of the website (the one above is for PROD, just run the the runHotReloadContainer.sh bash file).
 
 
