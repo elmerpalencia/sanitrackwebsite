@@ -145,7 +145,9 @@ export default function Header() {
             </div>
           )}
         </div>
+        <div style={headerStyles.accentLine}></div>
       </div>
+      
     </header>
   );
 }

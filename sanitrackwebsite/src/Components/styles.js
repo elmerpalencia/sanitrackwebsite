@@ -195,14 +195,14 @@ export const footerStyles = {
   brandTitle: {
     fontSize: '1.25rem',
     fontWeight: 'bold',
-    background: 'linear-gradient(90deg, #67e8f9 0%, #93c5fd 100%)',
+    background: 'linear-gradient(90deg, #ffffff 0%, #ffffff 100%)',
     WebkitBackgroundClip: 'text',
     WebkitTextFillColor: 'transparent',
     backgroundClip: 'text'
   },
   subtitle: {
     fontSize: '0.75rem',
-    color: '#94a3b8',
+    color: '#ffffff',
     fontFamily: 'monospace'
   },
   description: {
