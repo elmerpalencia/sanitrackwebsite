@@ -1,6 +1,6 @@
 import { useState } from 'react'
 
-function App() {
+function LandingPage() {
   const [role, setRole] = useState('admin')
   const [email, setEmail] = useState('admin@hospital.com')
   const [password, setPassword] = useState('adminpass')
@@ -114,4 +114,4 @@ function App() {
   )
 }
 
-export default App
+export default LandingPage
