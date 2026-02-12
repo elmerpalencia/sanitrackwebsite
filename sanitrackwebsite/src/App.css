@@ -1,11 +1,17 @@
 #root {
   max-width: 1280px;
   margin: 0 auto;
-  padding: 2rem;
+  padding-top: 0;
+  padding-bottom: 0;
   text-align: center;
 }
 
 footer {
+  margin-left: calc(-50vw + 50%);
+  margin-right: calc(-50vw + 50%);
+}
+
+header {
   margin-left: calc(-50vw + 50%);
   margin-right: calc(-50vw + 50%);
 }
