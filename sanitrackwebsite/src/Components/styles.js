@@ -2,7 +2,7 @@ export const headerStyles = {
   header: {
     top: 0,
     zIndex: 50,
-    background: '#ffffff',
+    background: '#172554',
     borderBottom: '1px solid #1e293b',
     boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.3)'
   },
@@ -31,7 +31,7 @@ export const headerStyles = {
   },
   brandSection: {
     display: 'flex',
-    alignItems: 'center',
+    alignItems: 'cent#172554er',
     gap: '0.75rem',
     cursor: 'pointer',
     zIndex: 60
@@ -42,7 +42,7 @@ export const headerStyles = {
   brandTitle: {
     fontSize: '1.5rem',
     fontWeight: 'bold',
-    background: 'linear-gradient(90deg, #f99567 0%, #fd9893 100%)',
+    background: 'linear-gradient(90deg, #fafafa 0%, #fafafa 100%)',
     WebkitBackgroundClip: 'text',
     WebkitTextFillColor: 'transparent',
     backgroundClip: 'text',
@@ -50,18 +50,19 @@ export const headerStyles = {
   },
   subtitle: {
     fontSize: '0.75rem',
-    color: '#000000',
+    color: '#ffffff',
     fontFamily: 'monospace',
     marginTop: '-0.25rem'
   },
   desktopNav: {
     display: 'none',
     alignItems: 'center',
+    color: '#ffffff',
     gap: '2rem'
   },
   navLink: {
     fontSize: '0.875rem',
-    color: '#000000',
+    color: '#ffffff',
     textDecoration: 'none',
     fontWeight: '500',
     display: 'flex',
@@ -141,8 +142,8 @@ export const headerStyles = {
 export const footerStyles = {
   footer: {
     position: 'relative',
-    background: '#ffffff',
-    color: '#f1f5f9',
+    background: "#172554",
+    color: '#475569',
     overflow: 'hidden'
   },
   pattern: {

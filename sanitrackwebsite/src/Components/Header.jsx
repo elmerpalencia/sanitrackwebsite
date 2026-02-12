@@ -45,14 +45,6 @@ export default function Header() {
                 Dashboard
               </a>
               <a 
-                href="#analytics" 
-                style={headerStyles.navLink}
-                onMouseEnter={(e) => e.currentTarget.style.color = '#67e8f9'}
-                onMouseLeave={(e) => e.currentTarget.style.color = '#cbd5e1'}
-              >
-                Analytics
-              </a>
-              <a 
                 href="#reports" 
                 style={headerStyles.navLink}
                 onMouseEnter={(e) => e.currentTarget.style.color = '#67e8f9'}
@@ -86,7 +78,7 @@ export default function Header() {
                   e.currentTarget.style.boxShadow = '0 4px 6px -1px rgba(34, 211, 238, 0.3)';
                 }}
               >
-                Get Started
+                Login
               </button>
             </div>
 

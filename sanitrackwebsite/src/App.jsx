@@ -3,24 +3,24 @@ import Header from './Components/Header.jsx'
 import { useState, useEffect } from 'react';
 import './App.css'
 
-import { createClient } from "@supabase/supabase-js";
-const supabase = createClient(import.meta.env.VITE_SUPABASE_URL, import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY);
+// import { createClient } from "@supabase/supabase-js";
+// const supabase = createClient(import.meta.env.VITE_SUPABASE_URL, import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY);
 
 
 
 
 function App() {
   
-  const [instruments, setInstruments] = useState([]);
+  // const [instruments, setInstruments] = useState([]);
 
-  useEffect(() => {
-    getInstruments();
-  }, []);
+  // useEffect(() => {
+  //   getInstruments();
+  // }, []);
 
-  async function getInstruments() {
-    const { data } = await supabase.from("instruments").select();
-    setInstruments(data);
-  }
+  // async function getInstruments() {
+  //   const { data } = await supabase.from("instruments").select();
+  //   setInstruments(data);
+  // }
 
 
 
