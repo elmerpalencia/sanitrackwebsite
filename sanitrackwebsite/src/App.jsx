@@ -1,5 +1,5 @@
-import Footer from './Components/Footer.jsx'
-import Header from './Components/Header.jsx'
+import Footer from './components/Footer.jsx'
+import Header from './components/Header.jsx'
 import Body  from './components/Body.jsx';
 import { useState, useEffect } from 'react';
 import './App.css'
@@ -32,10 +32,10 @@ function App() {
       </div>
       <div>
         {/* <h1>Hello Fill this out with admin content (i.e graphs, percentage, and whatnot)</h1> */}
-        <Body/ >
+        <Body/>
       </div>
       <div>
-        <Footer />
+        <Footer/>
       </div>
     </>
   )
