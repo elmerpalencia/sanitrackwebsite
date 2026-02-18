@@ -73,6 +73,69 @@ button:focus-visible {
 }
 
 
+/* Boxes css  */
+
+
+/* container that holds all boxes */
+.box-container {
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 50px;
+}
+
+/* individual stat box */
+.box {
+  height: 130px;
+  width: 230px;
+  border-radius: 20px;
+  padding: 20px;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+
+  background-color: #172554;
+  color: white;
+
+  box-shadow: 3px 3px 10px rgba(0, 30, 87, 0.35);
+  cursor: pointer;
+  transition: transform 0.25s ease-in-out;
+}
+
+.box:hover {
+  transform: scale(1.06);
+}
+
+/* inner text wrapper */
+.box .text {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+/* small label */
+.topic {
+  font-size: 13px;
+  font-weight: 400;
+  letter-spacing: 1px;
+}
+
+/* big number */
+.topic-heading {
+  font-size: 30px;
+  font-weight: 600;
+  letter-spacing: 2px;
+}
+
+/* responsive tweak */
+@media screen and (max-width: 500px) {
+  .box {
+    width: 90%;
+    max-width: 260px;
+  }
+}
 
 
 .conatainer {

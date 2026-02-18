@@ -1,5 +1,6 @@
 import Footer from './Components/Footer.jsx'
 import Header from './Components/Header.jsx'
+import Body  from './components/Body.jsx';
 import { useState, useEffect } from 'react';
 import './App.css'
 
@@ -30,7 +31,8 @@ function App() {
         <Header/>
       </div>
       <div>
-        <h1>Hello Fill this out with admin content (i.e graphs, percentage, and whatnot)</h1>
+        {/* <h1>Hello Fill this out with admin content (i.e graphs, percentage, and whatnot)</h1> */}
+        <Body/ >
       </div>
       <div>
         <Footer />
