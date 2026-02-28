@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import { Droplets, Shield, Menu, X, ChevronDown } from 'lucide-react';
 import { headerStyles } from './styles';
+import { supabase } from '../supabaseClient.js'
 
-export default function Header() {
+export default function Header({ userProfile }) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   // Media query for desktop nav
@@ -80,7 +81,31 @@ export default function Header() {
               >
                 Login
               </button>
+
+              <button 
+                style={headerStyles.logoutButton}
+                  onClick={async () => {
+                    await supabase.auth.signOut()
+                  }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.transform = 'translateY(-2px)';
+                  e.currentTarget.style.boxShadow = '0 10px 15px -3px rgba(34, 211, 238, 0.5)';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.transform = 'translateY(0)';
+                  e.currentTarget.style.boxShadow = '0 4px 6px -1px rgba(34, 211, 238, 0.3)';
+                }}
+              >
+                Logout
+              </button>
+              {userProfile?.name ? (
+    <span style={{ color: "#fff", fontWeight: 600, fontSize: 14 }}>
+      {userProfile.name}
+    </span>
+  ) : null}
             </div>
+             
+             
 
             {/* Mobile Menu Button */}
             <button 
