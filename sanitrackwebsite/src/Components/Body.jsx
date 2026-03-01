@@ -84,49 +84,58 @@ export default function Body({ session }) {
 
 
   //weekly average
-  const [weeklyAverage, setWeeklyAverage] = useState(0);
+  const [weeklyAverage, setWeeklyAverageAllTime] = useState(0);
 
   useEffect(() => {
     if (!session?.user?.id) return;
     const userId = session.user.id;
 
-    async function fetchWeeklyAverage() {
-      const now = new Date();
-      const start = new Date(now);
-      start.setHours(0, 0, 0, 0);
+    function startOfWeekSunday(dateObj) {
+      const d = new Date(dateObj);
+      d.setHours(0, 0, 0, 0);
+      const dayOfWeek = d.getDay(); 
+      d.setDate(d.getDate() - dayOfWeek); 
+      return d;
+    }
 
-      const daysSinceSunday = start.getDay();
-      start.setDate(start.getDate() - daysSinceSunday); 
-
-      const end = new Date(start);
-      end.setDate(end.getDate() + 6);     
-      end.setHours(23, 59, 59, 999);       
-
-      const startDate = start.toISOString().slice(0, 10);
-      const endDate = end.toISOString().slice(0, 10);
-
-      const { count, error } = await supabase
+    async function fetchWeeklyAverageAllTime() {
+      const { data, error } = await supabase
         .schema("relational")
         .from("history")
-        .select("historyid", { count: "exact", head: true })
-        .eq("authid", userId)
-        .gte("day", startDate)
-        .lte("day", endDate);
+        .select("day")
+        .eq("authid", userId);
 
       if (error) {
         console.error("fetchWeeklyAverage error:", error);
-        setWeeklyAverage(0);
+        setWeeklyAverageAllTime(0);
         return;
       }
 
-      const totalWashesThisWeek = count ?? 0;
+      if (!data || data.length === 0) {
+        setWeeklyAverageAllTime(0);
+        return;
+      }
 
-      // average washes per day across the 7-day week
-      const avg = totalWashesThisWeek / 7;
-      setWeeklyAverage(Math.round(avg)); 
+      const washesPerWeek = {};
+
+      data.forEach((row) => {
+        const dateObj = new Date(row.day + "T00:00:00"); //midnight
+        const weekStart = startOfWeekSunday(dateObj).toISOString().slice(0, 10);
+
+        washesPerWeek[weekStart] = (washesPerWeek[weekStart] ?? 0) + 1;
+      });
+
+      const weekCounts = Object.values(washesPerWeek); // only weeks w/data to account for vacation
+      const totalWashes = weekCounts.reduce((sum, c) => sum + c, 0);
+      const numWeeks = weekCounts.length;
+
+      const avg = numWeeks > 0 ? totalWashes / numWeeks : 0;
+
+      //.ceil to round up,
+      setWeeklyAverageAllTime(Math.ceil(avg));
     }
 
-    fetchWeeklyAverage();
+    fetchWeeklyAverageAllTime();
   }, [session]);
 
 
