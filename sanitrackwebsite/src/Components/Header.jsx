@@ -30,7 +30,7 @@ export default function Header({ userProfile }) {
                 <Droplets size={32} color="#22d3ee" />
               </div>
               <div>
-                <h1 style={headerStyles.brandTitle}>CleanTrack</h1>
+                <h1 style={headerStyles.brandTitle}>SaniTrack</h1>
                 <p style={headerStyles.subtitle}>Compliance Suite</p>
               </div>
             </div>
