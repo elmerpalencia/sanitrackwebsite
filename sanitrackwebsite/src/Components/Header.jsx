@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Droplets, Shield, Menu, X, ChevronDown } from 'lucide-react';
 import { headerStyles } from './styles';
+import { Link } from 'react-router-dom';
 
 export default function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -35,22 +36,16 @@ export default function Header() {
             </div>
 
             {/* Desktop Navigation */}
+
             <div style={desktopNavStyle}>
-              <a 
-                href="#dashboard" 
-                style={headerStyles.navLink}
-                onMouseEnter={(e) => e.currentTarget.style.color = '#67e8f9'}
-                onMouseLeave={(e) => e.currentTarget.style.color = '#cbd5e1'}
-              >
-                Dashboard
-              </a>
+              <Link to="/admin" style={{ color: 'inherit', textDecoration: 'none' }}>Admins Only</Link>
               <a 
                 href="#reports" 
                 style={headerStyles.navLink}
                 onMouseEnter={(e) => e.currentTarget.style.color = '#67e8f9'}
                 onMouseLeave={(e) => e.currentTarget.style.color = '#cbd5e1'}
               >
-                Reports
+                View Performance
               </a>
               <a 
                 href="#resources" 

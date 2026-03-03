@@ -1,10 +1,287 @@
+
+export const chartStyles = `
+  @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap');
+
+  .chart-card {
+    background: #ffffff;
+    border-radius: 16px;
+    padding: 28px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.06), 0 4px 16px rgba(0,0,0,0.04);
+    font-family: 'DM Sans', sans-serif;
+    width: 92%;
+  }
+
+  .chart-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
+  .chart-title {
+    font-size: 15px;
+    font-weight: 600;
+    color: #0f172a;
+    margin: 0 0 4px 0;
+  }
+
+  .chart-subtitle {
+    font-size: 12px;
+    color: #94a3b8;
+    margin: 0;
+    font-weight: 400;
+  }
+
+  .dept-tabs {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+  }
+
+  .dept-tab {
+    padding: 5px 12px;
+    border-radius: 100px;
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    border: 1.5px solid #e2e8f0;
+    background: transparent;
+    color: #64748b;
+    font-family: 'DM Sans', sans-serif;
+    transition: all 0.15s ease;
+  }
+
+  .dept-tab:hover {
+    border-color: #0ea5e9;
+    color: #0ea5e9;
+  }
+
+  .dept-tab.active {
+    background: #0ea5e9;
+    border-color: #0ea5e9;
+    color: #fff;
+  }
+
+  .chart-legend {
+    display: flex;
+    gap: 16px;
+    margin-top: 12px;
+  }
+
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    color: #64748b;
+  }
+
+  .legend-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+  }
+
+  .legend-line {
+    width: 16px;
+    height: 2px;
+    border-top: 2px dashed;
+  }
+
+  .tooltip-box {
+    background: #0f172a !important;
+    border-radius: 8px !important;
+    padding: 10px 14px !important;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 12px;
+    color: #f8fafc;
+    min-width: 130px;
+  }
+
+  .tooltip-day {
+    font-size: 11px;
+    color: #94a3b8;
+    margin-bottom: 6px;
+    font-family: 'DM Mono', monospace;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .tooltip-row {
+    display: flex;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 2px;
+  }
+
+  .tooltip-label { color: #94a3b8; }
+  .tooltip-value { font-weight: 600; font-family: 'DM Mono', monospace; }
+  .tooltip-actual { color: #38bdf8; }
+  .tooltip-target { color: #94a3b8; }
+`;
+
+
+export const cardStyles = `
+  @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap');
+
+  .card-wrapper * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+  .card-wrapper {
+    font-family: 'DM Sans', sans-serif;
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+    padding: 40px;
+    background: #f0f4f8;
+    min-height: 100vh;
+    align-items: flex-start;
+    justify-content: center;
+  }
+  .card {
+    background: #ffffff;
+    border-radius: 16px;
+    padding: 28px;
+    width: 300px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.06), 0 4px 16px rgba(0,0,0,0.04);
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    position: relative;
+    overflow: hidden;
+  }
+  .card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: var(--accent, #0d9488);
+    border-radius: 16px 16px 0 0;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+  }
+  .card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08), 0 12px 32px rgba(0,0,0,0.06);
+  }
+  .card:hover::before {
+    opacity: 1;
+  }
+  .card-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 12px;
+  }
+  .card-title {
+    font-size: 13px;
+    font-weight: 500;
+    color: #64748b;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+  .card-icon {
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    background: var(--icon-bg, #f0fdfa);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+  .card-icon svg {
+    width: 16px;
+    height: 16px;
+    color: var(--accent, #0d9488);
+  }
+  .card-content {
+    flex: 1;
+  }
+  .card-value {
+    font-size: 36px;
+    font-weight: 600;
+    color: #0f172a;
+    line-height: 1;
+    letter-spacing: -0.02em;
+    margin-bottom: 6px;
+  }
+  .card-description {
+    font-size: 14px;
+    color: #64748b;
+    line-height: 1.5;
+    font-weight: 400;
+  }
+  .card-footer {
+    border-top: 1px solid #f1f5f9;
+    padding-top: 14px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .footer-text {
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--footer-color, #10b981);
+    font-family: 'DM Mono', monospace;
+  }
+  .footer-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    background: var(--badge-bg, #f0fdf4);
+    color: var(--badge-color, #059669);
+    font-size: 11px;
+    font-weight: 600;
+    font-family: 'DM Mono', monospace;
+    padding: 2px 8px;
+    border-radius: 100px;
+  }
+  .card-progress {
+    margin-top: 4px;
+  }
+  .progress-bar-track {
+    height: 6px;
+    background: #f1f5f9;
+    border-radius: 100px;
+    overflow: hidden;
+  }
+  .progress-bar-fill {
+    height: 100%;
+    border-radius: 100px;
+    background: var(--accent, #0d9488);
+    transition: width 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .progress-label {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 6px;
+  }
+  .progress-label span {
+    font-size: 12px;
+    color: #94a3b8;
+  }
+  .progress-label strong {
+    font-size: 12px;
+    color: #475569;
+    font-weight: 500;
+  }
+`;
+
+
 export const headerStyles = {
   header: {
     top: 0,
     zIndex: 50,
     background: '#172554',
     borderBottom: '1px solid #1e293b',
-    boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.3)'
   },
   accentLine: {
     position: 'absolute',

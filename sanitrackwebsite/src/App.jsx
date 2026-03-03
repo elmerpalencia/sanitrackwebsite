@@ -1,44 +1,27 @@
-import Footer from './components/Footer.jsx'
-import Header from './components/Header.jsx'
-import Body  from './components/Body.jsx';
-import { useState, useEffect } from 'react';
+import Footer from './Components/Footer.jsx'
+import Header from './Components/Header.jsx'
+import Body from './Components/Body.jsx';
+import Admin from './AdminPage.jsx'
+import { Routes, Route } from 'react-router-dom';
 import './App.css'
 
-// import { createClient } from "@supabase/supabase-js";
-// const supabase = createClient(import.meta.env.VITE_SUPABASE_URL, import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY);
-
-
-
-
-function App() {
-  
-  // const [instruments, setInstruments] = useState([]);
-
-  // useEffect(() => {
-  //   getInstruments();
-  // }, []);
-
-  // async function getInstruments() {
-  //   const { data } = await supabase.from("instruments").select();
-  //   setInstruments(data);
-  // }
-
-
-
+function Home() {
   return (
     <>
-      <div>
-        <Header/>
-      </div>
-      <div>
-        {/* <h1>Hello Fill this out with admin content (i.e graphs, percentage, and whatnot)</h1> */}
-        <Body/>
-      </div>
-      <div>
-        <Footer/>
-      </div>
+      <Header />
+      <Body />
+      <Footer />
     </>
-  )
+  );
+}
+
+function App() {
+  return (
+    <Routes>
+      <Route path="/" element={<Home />} />
+      <Route path="/admin" element={<Admin />} />
+    </Routes>
+  );
 }
 
 export default App
