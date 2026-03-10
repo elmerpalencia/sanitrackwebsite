@@ -1,10 +1,13 @@
-import Footer from './components/Footer.jsx'
-import Header from './components/Header.jsx'
-import Body  from './components/Body.jsx'
+import Footer from './Components/Footer.jsx'
+import Header from './Components/Header.jsx'
+import Body  from './Components/Body.jsx'
+import Card from './Components/Card.jsx'
 import { useEffect, useState } from 'react'
 import { supabase } from './supabaseClient.js'
 import './App.css'
-
+import AdminPage from './AdminPage.jsx'
+import { Routes, Route } from 'react-router-dom'
+import Admin from './AdminPage.jsx'
 // import { createClient } from "@supabase/supabase-js";
 // const supabase = createClient(import.meta.env.VITE_SUPABASE_URL, import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY);
 
@@ -110,23 +113,21 @@ function App() {
   }, [session])
 
 
-  if (session) {
+if (session) {
   return (
-
-    <>
-      <div>
-        <Header userProfile={userProfile}/>
-      </div>
-      <div>
-        {/* <h1>Hello Fill this out with admin content (i.e graphs, percentage, and whatnot)</h1> */}
-        <Body session={session}/>
-      </div>
-      <div>
-        <Footer/>
-      </div>
-    </>
+    <Routes>
+      <Route path="/" element={
+        <>
+          <Header userProfile={userProfile} />
+          <Body session={session} />
+          <Footer />
+        </>
+      } />
+      <Route path="/admin" element={<Admin />} />
+      <Route path="/app" element={<App />} />
+    </Routes>
   )
-  }
+}
 
   return (
     <div className="sanitrack-root">

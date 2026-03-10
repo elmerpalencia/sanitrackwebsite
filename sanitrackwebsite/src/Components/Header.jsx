@@ -40,14 +40,8 @@ export default function Header({ userProfile }) {
 
             <div style={desktopNavStyle}>
               <Link to="/admin" style={{ color: 'inherit', textDecoration: 'none' }}>Admins Only</Link>
-              <a 
-                href="#reports" 
-                style={headerStyles.navLink}
-                onMouseEnter={(e) => e.currentTarget.style.color = '#67e8f9'}
-                onMouseLeave={(e) => e.currentTarget.style.color = '#cbd5e1'}
-              >
-                View Performance
-              </a>
+              <Link to="/app" style={{ color: 'inherit', textDecoration: 'none' }}>View Staff</Link>
+
               <a 
                 href="#resources" 
                 style={headerStyles.navLink}
