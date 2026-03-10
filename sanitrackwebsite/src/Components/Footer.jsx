@@ -36,7 +36,7 @@ export default function Footer() {
                 <Droplets size={32} color="#22d3ee" />
               </div>
               <div>
-                <h3 style={footerStyles.brandTitle}>CleanTrack</h3>
+                <h3 style={footerStyles.brandTitle}>SaniTrack</h3>
                 <p style={footerStyles.subtitle}>Compliance Suite</p>
               </div>
             </div>
@@ -99,7 +99,7 @@ export default function Footer() {
         <div style={footerStyles.bottomBar}>
           <div style={bottomContentStyle}>
             <p style={footerStyles.copyright}>
-              © {currentYear} CleanTrack Systems. All rights reserved.
+              © {currentYear} SaniTrack Systems. All rights reserved.
             </p>
             <div style={footerStyles.footerLinks}>
               <a 
