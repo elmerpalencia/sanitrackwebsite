@@ -358,6 +358,18 @@ export const headerStyles = {
     transition: 'transform 0.2s, box-shadow 0.2s',
     boxShadow: '0 4px 6px -1px rgba(34, 211, 238, 0.3)'
   },
+  logoutButton: {
+    padding: '0.625rem 1.5rem',
+    background: 'linear-gradient(135deg, #ee2222 0%, #f63b3b 100%)',
+    color: '#fff',
+    border: 'none',
+    borderRadius: '0.5rem',
+    fontSize: '0.875rem',
+    fontWeight: '600',
+    cursor: 'pointer',
+    transition: 'transform 0.2s, box-shadow 0.2s',
+    boxShadow: '0 4px 6px -1px rgba(34, 211, 238, 0.3)'
+  },
   badge: {
     display: 'flex',
     alignItems: 'center',
