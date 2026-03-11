@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import { supabase } from "../supabaseClient";
+import Card from './Card.jsx'
 
 
 export default function Body({ session }) {
@@ -289,55 +290,47 @@ export default function Body({ session }) {
         </div>
       </div> */
 
-      <div className="box-container">
-        <div className="box box1">
-          <div className="text">
-            <h2 className="topic-heading">{washesToday}</h2>
-            <h2 className="topic">Washes Today</h2>
-          </div>
-        </div>
-
-        <div className="box box2">
-          <div className="text">
-            <h2 className="topic-heading">{complianceRate}%</h2>
-            <h2 className="topic">Compliance Rate</h2>
-          </div>
-        </div>
-
-        <div className="box box3">
-          <div className="text">
-            <h2 className="topic-heading">{weeklyAverage}</h2>
-            <h2 className="topic">Weekly Average</h2>
-          </div>
-        </div>
-
-        <div className="box box4">
-          <div className="text">
-            <h2 className="topic-heading">{streak}</h2>
-            <h2 className="topic">Current Streak</h2>
-          </div>
-        </div>
-
-        <div className="box box5">
-          <div className="text">
-            <h2 className="topic-heading">320</h2>
-            <h2 className="topic">Today's Hourly Activity</h2>
-          </div>
-        </div>
-
-        <div className="box box6">
-          <div className="text">
-            <h2 className="topic-heading">{todayCompliance}</h2>
-            <h2 className="topic">Today's Compliance</h2>
-          </div>
-        </div>
-
-        <div className="box box7">
-          <div className="text">
-            <h2 className="topic-heading">320</h2>
-            <h2 className="topic">Weekly Performance Trend</h2>
-          </div>
-        </div>
+            <div style={{
+        display: "grid",
+        gridTemplateColumns: "1fr 1fr",
+        gap: "24px",
+        padding: "40px",
+        background: "#f0f4f8",
+      }}>
+         <Card
+          title="Staff Compliance"
+          icon={<path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />}
+          value="92.6%"
+          progress={92.6}
+          footerText="Target: 95% compliance"
+          footerBadge="On Track"
+          accent="#0ea5e9"
+          iconBg="#f0f9ff"
+        />
+        <Card
+          title="Amount of Washes"
+          icon={<path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />}
+          value="1,772"
+          footerText="Up 234 washes from yesterday"
+          footerBadge="On Track"
+          accent="#0ea5e9"
+          iconBg="#f0f9ff"
+        />
+        <Card
+          title="Top Performer"
+          icon={<path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />}
+          value="Nurse John Doe"
+          footerText="98% compliance"
+          accent="#0ea5e9"
+          iconBg="#f0f9ff"
+        />
+        <Card
+          title="Active Staff"
+          icon={<path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />}
+          value="53"
+          accent="#0ea5e9"
+          iconBg="#f0f9ff"
+        />
       </div>
   );
 };
