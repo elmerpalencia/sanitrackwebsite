@@ -279,6 +279,7 @@ export const cardStyles = `
 
 export const headerStyles = {
   header: {
+    position: 'relative',
     top: 0,
     zIndex: 50,
     background: '#172554',

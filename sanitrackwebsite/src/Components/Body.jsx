@@ -3,12 +3,28 @@
 import React, { useEffect, useState } from "react";
 import { supabase } from "../supabaseClient";
 import Card from './Card.jsx'
+import { AdminChart } from '../Components/Chart.jsx';  // ← curly braces
 
 
+//chart info
 export default function Body({ session }) {
+  
+  const [adminData, setAdminData] = useState({
+    "self": [
+      { day: "Mon", actual: 0, target: 100 },
+      { day: "Tue", actual: 0, target: 100 },
+      { day: "Wed", actual: 0, target: 100 },
+      { day: "Thu", actual: 0, target: 100 },
+      { day: "Fri", actual: 0, target: 100 },
+      { day: "Sat", actual: 0, target: 100 },
+      { day: "Sun", actual: 0, target: 100 },
+    ]
+    
+  });
 
-  //washes today
+  //Amount of washes
   const [washesToday, setWashesToday] = useState(0);
+  const [washChangeText, setWashChangeText] = useState("No change from yesterday");
 
   useEffect(() => {
     if (!session?.user?.id) return;
@@ -22,7 +38,6 @@ export default function Body({ session }) {
     const end = new Date(start);
     end.setDate(end.getDate() + 1);
 
-
     async function fetchWashesToday() {
       const date = start.toISOString().slice(0, 10);
       const { count, error } = await supabase
@@ -31,15 +46,44 @@ export default function Body({ session }) {
         .select("historyid", { count: "exact", head: true })
         .eq("authid", userId)
         .eq("day", date);
-        
 
       if (error) {
         console.error("fetchWashesToday error:", error);
         setWashesToday(0);
+        setWashChangeText("Unable to compare with yesterday");
+        return;
       } else {
         setWashesToday(count ?? 0);
       }
 
+      const todayCount = count ?? 0;
+
+      const yesterday = new Date(start);
+      yesterday.setDate(yesterday.getDate() - 1);
+      const yesterdayStr = yesterday.toISOString().slice(0, 10);
+
+      const { count: yesterdayCount, error: yesterdayError } = await supabase
+        .schema("relational")
+        .from("history")
+        .select("historyid", { count: "exact", head: true })
+        .eq("authid", userId)
+        .eq("day", yesterdayStr);
+
+      if (yesterdayError) {
+        console.error("fetchYesterday error:", yesterdayError);
+        setWashChangeText("Unable to compare with yesterday");
+        return;
+      }
+
+      const diff = todayCount - (yesterdayCount ?? 0);
+
+      if (diff > 0) {
+        setWashChangeText(`Up ${diff} washes from yesterday`);
+      } else if (diff < 0) {
+        setWashChangeText(`Down ${Math.abs(diff)} washes from yesterday`);
+      } else {
+        setWashChangeText("No change from yesterday");
+      }
     }
 
     fetchWashesToday();
@@ -82,6 +126,11 @@ export default function Body({ session }) {
 
     fetchComplianceRate();
   }, [session]);
+
+  //for lifetime compliance card
+  const complianceOnTrack = complianceRate >= 95;
+  const complianceBadgeText = complianceOnTrack ? "On Track" : "Not On Track";
+  
 
 
   //weekly average
@@ -138,10 +187,13 @@ export default function Body({ session }) {
 
     fetchWeeklyAverageAllTime();
   }, [session]);
+  const weeklyAverageOnTrack = weeklyAverage >= 700;
+  const weeklyAverageBadgeText = weeklyAverageOnTrack ? "On Track" : "Not On Track";
 
 
   //current streak
   const [streak, setStreak] = useState(0);
+  const [longestStreak, setLongestStreak] = useState(0);
 
   useEffect(() => {
     if (!session?.user?.id) return;
@@ -212,9 +264,9 @@ export default function Body({ session }) {
           washesByDay[r.day] = (washesByDay[r.day] ?? 0) + 1;
         });
 
-        // start streak from today and go backwards until washes for that day don't meet the hospital metric
+        // current streak: start from today and go backwards
         let s = 0;
-        const d = new Date();          
+        const d = new Date();
         d.setHours(0, 0, 0, 0);
 
         while (true) {
@@ -223,13 +275,53 @@ export default function Body({ session }) {
 
           if (count >= requirement) {
             s += 1;
-            d.setDate(d.getDate() - 1); 
+            d.setDate(d.getDate() - 1);
           } else {
-            break; 
+            break;
           }
         }
 
         setStreak(s);
+
+        // longest streak across all recorded days
+        const sortedDays = Object.keys(washesByDay).sort();
+
+        let longest = 0;
+        let currentRun = 0;
+        let previousDate = null;
+
+        for (const day of sortedDays) {
+          const count = washesByDay[day] ?? 0;
+
+          if (count < requirement) {
+            currentRun = 0;
+            previousDate = null;
+            continue;
+          }
+
+          const currentDate = new Date(day + "T00:00:00");
+
+          if (!previousDate) {
+            currentRun = 1;
+          } else {
+            const nextExpected = new Date(previousDate);
+            nextExpected.setDate(nextExpected.getDate() + 1);
+
+            if (currentDate.getTime() === nextExpected.getTime()) {
+              currentRun += 1;
+            } else {
+              currentRun = 1;
+            }
+          }
+
+          if (currentRun > longest) {
+            longest = currentRun;
+          }
+
+          previousDate = currentDate;
+        }
+
+        setLongestStreak(longest);
       } catch (e) {
         console.error("fetchStreak unexpected error:", e);
         setStreak(0);
@@ -241,6 +333,7 @@ export default function Body({ session }) {
 
 
   //today's compliance
+  
   const [todayCompliance, setTodayCompliance] = useState("0/0");
 
   useEffect(() => {
@@ -275,6 +368,85 @@ export default function Body({ session }) {
     fetchTodayCompliance();
   }, [session]);
 
+  //weekly performance trend
+  useEffect(() => {
+  if (!session?.user?.id) return;
+
+  const userId = session.user.id;
+
+  function formatLocalDate(date) {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const day = String(date.getDate()).padStart(2, "0");
+    return `${year}-${month}-${day}`;
+  }
+
+  async function fetchWeeklyGraphData() {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+
+    const startOfWeek = new Date(today);
+    startOfWeek.setDate(today.getDate() - today.getDay());
+    startOfWeek.setHours(0, 0, 0, 0);
+
+    const endOfWeek = new Date(startOfWeek);
+    endOfWeek.setDate(startOfWeek.getDate() + 6);
+    endOfWeek.setHours(23, 59, 59, 999);
+
+    const startStr = formatLocalDate(startOfWeek);
+    const endStr = formatLocalDate(endOfWeek);
+
+    const { data, error } = await supabase
+      .schema("relational")
+      .from("history")
+      .select("day")
+      .eq("authid", userId)
+      .gte("day", startStr)
+      .lte("day", endStr);
+
+    if (error) {
+      console.error("fetchWeeklyGraphData error:", error);
+      return;
+    }
+
+    const washesByDay = {};
+    (data ?? []).forEach((row) => {
+      washesByDay[row.day] = (washesByDay[row.day] ?? 0) + 1;
+    });
+
+    const orderedDays = [
+        { label: "Mon", offset: 1, target: 100 },
+        { label: "Tue", offset: 2, target: 100 },
+        { label: "Wed", offset: 3, target: 100 },
+        { label: "Thu", offset: 4, target: 100 },
+        { label: "Fri", offset: 5, target: 100 },
+        { label: "Sat", offset: 6, target: 100 },
+        { label: "Sun", offset: 0, target: 100 },
+      ];
+
+    const weekData = orderedDays.map(({ label, offset, target }) => {
+        const currentDate = new Date(startOfWeek);
+        currentDate.setDate(startOfWeek.getDate() + offset);
+
+        const dateStr = formatLocalDate(currentDate);
+
+        return {
+          day: label,
+          actual: washesByDay[dateStr] ?? 0,
+          target,
+        };
+      });
+
+      setAdminData({
+        self: weekData,
+      });
+    }
+
+    fetchWeeklyGraphData();
+  }, [session]);
+
+
 
 
   return (
@@ -298,39 +470,59 @@ export default function Body({ session }) {
         background: "#f0f4f8",
       }}>
          <Card
-          title="Staff Compliance"
+          title="Lifetime Compliance"
           icon={<path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />}
-          value="92.6%"
-          progress={92.6}
+          value={complianceRate + "%"}
+          progress={complianceRate}
           footerText="Target: 95% compliance"
-          footerBadge="On Track"
+          footerBadge={complianceBadgeText}
           accent="#0ea5e9"
           iconBg="#f0f9ff"
         />
         <Card
           title="Amount of Washes"
           icon={<path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />}
-          value="1,772"
-          footerText="Up 234 washes from yesterday"
-          footerBadge="On Track"
+          value={String(washesToday ?? 0)}
+          footerText={washChangeText}
+          //footerBadge={washChangeText}
           accent="#0ea5e9"
           iconBg="#f0f9ff"
         />
         <Card
-          title="Top Performer"
+          title="Weekly Average"
           icon={<path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />}
-          value="Nurse John Doe"
-          footerText="98% compliance"
+          value={String(weeklyAverage ?? 0)}
+          progress={Math.min(Number((((weeklyAverage ?? 0) / 700) * 100).toFixed(2)), 100)}
+          footerText="Goal: 700 washes/week"
+          footerBadge={weeklyAverageBadgeText}
           accent="#0ea5e9"
           iconBg="#f0f9ff"
         />
         <Card
-          title="Active Staff"
+          title="Current Streak"
           icon={<path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />}
-          value="53"
+          value={String(streak ?? 0)}
+          footerText={`Largest streak: ${longestStreak}`}
           accent="#0ea5e9"
           iconBg="#f0f9ff"
         />
+        <div style={{ gridColumn: "1 / -1", display: "flex", justifyContent: "center" }}>
+        <Card
+          title="Today's Compliance"
+          icon={<path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />}
+          value={todayCompliance}
+          footerText="Remember to wash for at least 20 seconds"
+          accent="#0ea5e9"
+          iconBg="#f0f9ff"
+        />
+        </div>
+       
+        {/* Chart spans both columns — inside the grid */}
+                <div style={{ gridColumn: "1 / -1" }}>
+                  <AdminChart data={adminData} width={800} />
+                </div>
+              
+              
       </div>
   );
 };
