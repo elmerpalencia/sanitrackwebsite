@@ -143,7 +143,7 @@ export const cardStyles = `
     justify-content: center;
   }
   .card {
-    background: #ffffff;
+    background:  #172554;
     border-radius: 16px;
     padding: 28px;
     width: 300px;
@@ -183,7 +183,7 @@ export const cardStyles = `
   .card-title {
     font-size: 13px;
     font-weight: 500;
-    color: #64748b;
+    color: #ffffff;
     letter-spacing: 0.04em;
     text-transform: uppercase;
   }
@@ -208,7 +208,7 @@ export const cardStyles = `
   .card-value {
     font-size: 36px;
     font-weight: 600;
-    color: #0f172a;
+    color: #ffffff;
     line-height: 1;
     letter-spacing: -0.02em;
     margin-bottom: 6px;
