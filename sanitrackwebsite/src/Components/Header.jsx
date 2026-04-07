@@ -28,7 +28,7 @@ export default function Header({ userProfile }) {
             {/* Brand */}
             <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
           <img
-            src="/public/logo.png"
+            src="/logo.png"
             alt="SaniTrack Logo"
             style={{
               width: '46px',

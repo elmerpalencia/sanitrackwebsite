@@ -4,4 +4,4 @@ services:
   sanitrackwebsite:
     build: .
     ports:
-      - "8080:80"
+      - "5173:80"

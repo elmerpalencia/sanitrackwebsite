@@ -167,7 +167,7 @@ if (session) {
       <div className="container">
         <div className="nav">
           <div className="brand">
-              <img src="/public/logo.png" alt="SaniTrack Logo" />
+              <img src="/logo.png" alt="SaniTrack Logo" />
             <h2>SaniTrack</h2>
           </div>
           <div />
@@ -181,7 +181,7 @@ if (session) {
         <div className="login-center">
           <div className="login-card">
             <div className="login-top">
-                <img src="/public/logo.png" alt="SaniTrack Logo" />
+                <img src="/logo.png" alt="SaniTrack Logo" />
               <h3>Hand Hygiene Tracker</h3>
               <p>Monitoring hand washing compliance for better patient safety</p>
             </div>
