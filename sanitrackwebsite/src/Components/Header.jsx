@@ -26,36 +26,32 @@ export default function Header({ userProfile }) {
         <div style={headerStyles.contentWrapper}>
           <nav style={headerStyles.nav}>
             {/* Brand */}
-            <div style={headerStyles.brandSection}>
-              <div style={headerStyles.iconWrapper}>
-                <Droplets size={32} color="#22d3ee" />
-              </div>
-              <div>
-                <h1 style={headerStyles.brandTitle}>SaniTrack</h1>
-                <p style={headerStyles.subtitle}>Compliance Suite</p>
-              </div>
-            </div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+          <img
+            src="/public/logo.png"
+            alt="SaniTrack Logo"
+            style={{
+              width: '46px',
+              height: '46px',
+              borderRadius: '50%',
+              background: 'white',
+              padding: '6px',
+              boxShadow: '0 4px 12px rgba(2,6,23,0.06)'
+            }}
+          />
+          <h2 style={{ margin: 0, fontSize: '18px', color: '#fff' }}>SaniTrack: Handwash Tracking</h2>
+
+        </div>
 
             {/* Desktop Navigation */}
 
             <div style={desktopNavStyle}>
               <Link to="/admin" style={{ color: 'inherit', textDecoration: 'none' }}>Admins Only</Link>
-              <Link to="/app" style={{ color: 'inherit', textDecoration: 'none' }}>View Staff</Link>
+              <Link to="/app" style={{ color: 'inherit', textDecoration: 'none' }}> View All Staff</Link>
+              <Link to="/app" style={{ color: 'inherit', textDecoration: 'none' }}> Create New Member</Link>
 
-              <a 
-                href="#resources" 
-                style={headerStyles.navLink}
-                onMouseEnter={(e) => e.currentTarget.style.color = '#67e8f9'}
-                onMouseLeave={(e) => e.currentTarget.style.color = '#cbd5e1'}
-              >
-                Resources
-                <ChevronDown size={14} />
-              </a>
+              <Link to="/app" style={{ color: 'inherit', textDecoration: 'none' }}> My Stats</Link>
               
-              <div style={headerStyles.badge}>
-                <Shield size={12} />
-                <span>HIPAA</span>
-              </div>
               
               <button 
                 style={headerStyles.ctaButton}
@@ -105,59 +101,6 @@ export default function Header({ userProfile }) {
               {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
             </button>
           </nav>
-
-          {/* Mobile Menu */}
-          {mobileMenuOpen && (
-            <div style={headerStyles.mobileMenu}>
-              <a 
-                href="#dashboard" 
-                style={headerStyles.mobileNavLink}
-                onMouseEnter={(e) => e.currentTarget.style.color = '#67e8f9'}
-                onMouseLeave={(e) => e.currentTarget.style.color = '#cbd5e1'}
-                onClick={() => setMobileMenuOpen(false)}
-              >
-                Dashboard
-              </a>
-              <a 
-                href="#analytics" 
-                style={headerStyles.mobileNavLink}
-                onMouseEnter={(e) => e.currentTarget.style.color = '#67e8f9'}
-                onMouseLeave={(e) => e.currentTarget.style.color = '#cbd5e1'}
-                onClick={() => setMobileMenuOpen(false)}
-              >
-                Analytics
-              </a>
-              <a 
-                href="#reports" 
-                style={headerStyles.mobileNavLink}
-                onMouseEnter={(e) => e.currentTarget.style.color = '#67e8f9'}
-                onMouseLeave={(e) => e.currentTarget.style.color = '#cbd5e1'}
-                onClick={() => setMobileMenuOpen(false)}
-              >
-                Reports
-              </a>
-              <a 
-                href="#resources" 
-                style={headerStyles.mobileNavLink}
-                onMouseEnter={(e) => e.currentTarget.style.color = '#67e8f9'}
-                onMouseLeave={(e) => e.currentTarget.style.color = '#cbd5e1'}
-                onClick={() => setMobileMenuOpen(false)}
-              >
-                Resources
-              </a>
-              
-              <div style={{ display: 'flex', justifyContent: 'center', marginTop: '0.5rem' }}>
-                <div style={headerStyles.badge}>
-                  <Shield size={12} />
-                  <span>HIPAA Compliant</span>
-                </div>
-              </div>
-              
-              <button style={headerStyles.mobileCTAButton}>
-                Get Started
-              </button>
-            </div>
-          )}
         </div>
         <div style={headerStyles.accentLine}></div>
       </div>

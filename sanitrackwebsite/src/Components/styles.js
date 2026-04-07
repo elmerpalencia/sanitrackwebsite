@@ -480,9 +480,14 @@ export const footerStyles = {
     gap: '0.75rem',
     cursor: 'pointer'
   },
-  iconWrapper: {
-    position: 'relative'
-  },
+iconWrapper: {
+  width: '46px',
+  height: '46px',
+  borderRadius: '50%',
+  background: 'white',
+  padding: '6px',
+  boxShadow: '0 4px 12px rgba(2,6,23,0.06)',
+},
   brandTitle: {
     fontSize: '1.25rem',
     fontWeight: 'bold',

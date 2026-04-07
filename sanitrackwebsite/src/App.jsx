@@ -132,10 +132,10 @@ if (session) {
   return (
     <div className="sanitrack-root">
       <style>{`
-        .sanitrack-root{font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;min-height:100vh;width:100vw;background:linear-gradient(90deg,#ffffff 0%, #f3f9ff 100%);background-size:cover;background-repeat:no-repeat;display:flex;align-items:center;justify-content:center;padding:0;overflow-x:hidden}
-        .container{width:100%;max-width:1200px;display:flex;flex-direction:column;align-items:center;gap:22px;position:relative;min-height:100vh;padding-top:84px;padding-bottom:84px}
+        .sanitrack-root{font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;background-size:covert;display:flex;align-items:center;justify-content:center;padding:0;}
+        .container{display:flex;flex-direction:column;align-items:center;}
 
-        .nav{width:100%;display:flex;align-items:center;justify-content:space-between}
+        .nav{display:flex;align-items:center;justify-content:space-between}
         .brand{display:flex;align-items:center;gap:12px}
         .brand img{width:46px;height:46px;border-radius:50%;background:white;padding:6px;box-shadow:0 4px 12px rgba(2,6,23,0.06)}
         .brand h2{margin:0;font-size:18px;color:#0b1220}
@@ -162,17 +162,6 @@ if (session) {
         .cta{display:flex;gap:10px;margin-top:8px}
         .btn-primary{flex:1;padding:10px;border-radius:8px;border:none;background:#0477b6;color:white;font-weight:700;cursor:pointer}
         .btn-ghost{padding:10px;border-radius:8px;border:1px solid #cbd5e1;background:white;cursor:pointer}
-
-        .demo-note{margin-top:12px;background:#f1f8ff;padding:10px;border-radius:8px;color:#0b2b40;font-size:13px}
-
-        @media (max-width:900px){
-          .container{padding:28px;padding-top:64px}
-        }
-        @media (max-width:640px){
-          .container{padding:12px}
-          .login-card{width:100%}
-          .login-center{position:relative;left:auto;top:auto;transform:none;z-index:3}
-        }
       `}</style>
 
       <div className="container">
@@ -220,12 +209,6 @@ if (session) {
                 {authenticationError}
               </div>
             )}
-
-            <div className="demo-note">
-              Demo accounts:
-              <div style={{marginTop:6}}>• admin@hospital.com (Admin analytics view)</div>
-              <div>• staff@hospital.com (Personal stats)</div>
-            </div>
           </div>
         </div>
           
