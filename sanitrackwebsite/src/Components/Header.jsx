@@ -47,10 +47,13 @@ export default function Header({ userProfile }) {
 
             <div style={desktopNavStyle}>
               <Link to="/admin" style={{ color: 'inherit', textDecoration: 'none' }}>Admins Only</Link>
-              <Link to="/app" style={{ color: 'inherit', textDecoration: 'none' }}> View All Staff</Link>
-              <Link to="/app" style={{ color: 'inherit', textDecoration: 'none' }}> Create New Member</Link>
+              <Link to="/choose-staff" style={{ color: 'inherit', textDecoration: 'none' }}>
+                Choose Staff
+              </Link>
+              <Link to="/" style={{ color: 'inherit', textDecoration: 'none' }}> View All Staff</Link>
+              <Link to="/" style={{ color: 'inherit', textDecoration: 'none' }}> Create New Member</Link>
 
-              <Link to="/app" style={{ color: 'inherit', textDecoration: 'none' }}> My Stats</Link>
+              <Link to="/" style={{ color: 'inherit', textDecoration: 'none' }}> My Stats</Link>
               
               
               <button 
