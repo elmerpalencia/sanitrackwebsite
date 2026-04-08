@@ -50,7 +50,6 @@ export default function Header({ userProfile }) {
               <Link to="/choose-staff" style={{ color: 'inherit', textDecoration: 'none' }}>
                 Choose Staff
               </Link>
-              <Link to="/" style={{ color: 'inherit', textDecoration: 'none' }}> View All Staff</Link>
               <Link to="/" style={{ color: 'inherit', textDecoration: 'none' }}> Create New Member</Link>
 
               <Link to="/" style={{ color: 'inherit', textDecoration: 'none' }}> My Stats</Link>
