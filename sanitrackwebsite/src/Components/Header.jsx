@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Droplets, Shield, Menu, X, ChevronDown } from 'lucide-react';
 import { headerStyles } from './styles';
 import { Link } from 'react-router-dom';
-import { supabase } from '../supabaseClient.js'
+//import { supabase } from '../supabaseClient.js'
 
 export default function Header({ userProfile }) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);

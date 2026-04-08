@@ -3,11 +3,12 @@ import Header from './Components/Header.jsx'
 import Body  from './Components/Body.jsx'
 import Card from './Components/Card.jsx'
 import { useEffect, useState } from 'react'
-import { supabase } from './supabaseClient.js'
+//import { supabase } from './supabaseClient.js'
 import './App.css'
 import AdminPage from './AdminPage.jsx'
 import { Routes, Route } from 'react-router-dom'
 import Admin from './AdminPage.jsx'
+import CreateUser from './CreateUser.jsx'
 // import { createClient } from "@supabase/supabase-js";
 // const supabase = createClient(import.meta.env.VITE_SUPABASE_URL, import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY);
 
@@ -70,7 +71,7 @@ function App() {
  
   }
 
-  //keeps you logged in on a refresh
+ /*  //keeps you logged in on a refresh
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
       setSession(session)
@@ -82,7 +83,7 @@ function App() {
       }
     )
     return () => subscription.unsubscribe()
-  }, [])
+  }, []) */
 
   //retrieves user profile
   useEffect(() => {
@@ -124,6 +125,7 @@ if (session) {
         </>
       } />
       <Route path="/admin" element={<Admin />} />
+      <Route path="/create-user" element={<CreateUser />} />
       <Route path="/app" element={<App />} />
     </Routes>
   )
