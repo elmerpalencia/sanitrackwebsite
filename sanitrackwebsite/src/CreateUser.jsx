@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { supabase } from './supabaseClient.js'
 
 export default function CreateUser() {
   const [formData, setFormData] = useState({
@@ -24,7 +25,7 @@ export default function CreateUser() {
     })
   }
 
-  function handleSubmit(e) {
+  async function handleSubmit(e) { //async function since using await inside
     e.preventDefault()
 
     if (!formData.name || !formData.email || !formData.password) {
@@ -32,8 +33,34 @@ export default function CreateUser() {
       return
     }
 
-    console.log('Create user:', formData)
-    setMessage(`User "${formData.name}" is ready to be created as ${formData.role}.`)
+    const { data, error } = await supabase.auth.signUp({
+      email: formData.email,
+      password: formData.password,
+    })
+
+    if (error) {
+      setMessage(error.message)
+      return
+    }
+
+    const { error: profileError } = await supabase //inserting into profiles
+      .schema('relational')
+      .from('profiles')
+      .insert([
+        {
+          authid: data.user.id,
+          name: formData.name,
+          role: formData.role,
+        },
+      ])
+
+    if (profileError) {
+      setMessage(profileError.message)
+      return
+    }
+
+    setMessage(`User "${formData.name}" was created successfully.`) //showing success message
+
   }
 
   return (

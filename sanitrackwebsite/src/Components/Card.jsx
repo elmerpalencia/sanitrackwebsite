@@ -9,7 +9,7 @@ function Card({
   footerBadge,
   progress,
   accent = "#0d9488",
-  iconBg = "#f0fdfa",
+  iconBg = "#feffff",
 }) {
   return (
     <>
