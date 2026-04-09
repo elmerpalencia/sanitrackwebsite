@@ -1,16 +1,18 @@
-// Main.jsx
-
 import React, { useEffect, useState } from "react";
 import { supabase } from "../supabaseClient";
-import Card from './Card.jsx'
-import { AdminChart } from '../Components/Chart.jsx';  // ← curly braces
+import Card from "./Card.jsx";
+import { AdminChart } from "../Components/Chart.jsx";
 
+export default function Body({
+  session,
+  adminViewingStaff = false,
+  viewedStaffId = null,
+}) {
+  const effectiveAuthId =
+    adminViewingStaff && viewedStaffId ? viewedStaffId : session?.user?.id;
 
-//chart info
-export default function Body({ session }) {
-  
   const [adminData, setAdminData] = useState({
-    "self": [
+    self: [
       { day: "Mon", actual: 0, target: 100 },
       { day: "Tue", actual: 0, target: 100 },
       { day: "Wed", actual: 0, target: 100 },
@@ -18,33 +20,31 @@ export default function Body({ session }) {
       { day: "Fri", actual: 0, target: 100 },
       { day: "Sat", actual: 0, target: 100 },
       { day: "Sun", actual: 0, target: 100 },
-    ]
-    
+    ],
   });
 
-  //Amount of washes
   const [washesToday, setWashesToday] = useState(0);
   const [washChangeText, setWashChangeText] = useState("No change from yesterday");
+  const [complianceRate, setComplianceRate] = useState(0);
+  const [weeklyAverage, setWeeklyAverageAllTime] = useState(0);
+  const [streak, setStreak] = useState(0);
+  const [longestStreak, setLongestStreak] = useState(0);
+  const [todayCompliance, setTodayCompliance] = useState("0/0");
 
   useEffect(() => {
-    if (!session?.user?.id) return;
+    if (!effectiveAuthId) return;
 
-    const userId = session.user.id;
-
-    // start/end of today
     const start = new Date();
     start.setHours(0, 0, 0, 0);
 
-    const end = new Date(start);
-    end.setDate(end.getDate() + 1);
-
     async function fetchWashesToday() {
       const date = start.toISOString().slice(0, 10);
+
       const { count, error } = await supabase
         .schema("relational")
         .from("history")
         .select("historyid", { count: "exact", head: true })
-        .eq("authid", userId)
+        .eq("authid", effectiveAuthId)
         .eq("day", date);
 
       if (error) {
@@ -52,10 +52,9 @@ export default function Body({ session }) {
         setWashesToday(0);
         setWashChangeText("Unable to compare with yesterday");
         return;
-      } else {
-        setWashesToday(count ?? 0);
       }
 
+      setWashesToday(count ?? 0);
       const todayCount = count ?? 0;
 
       const yesterday = new Date(start);
@@ -66,7 +65,7 @@ export default function Body({ session }) {
         .schema("relational")
         .from("history")
         .select("historyid", { count: "exact", head: true })
-        .eq("authid", userId)
+        .eq("authid", effectiveAuthId)
         .eq("day", yesterdayStr);
 
       if (yesterdayError) {
@@ -87,64 +86,43 @@ export default function Body({ session }) {
     }
 
     fetchWashesToday();
-  }, [session]);
-
-
-  //compliance rate
-  const [complianceRate, setComplianceRate] = useState(0);
+  }, [effectiveAuthId]);
 
   useEffect(() => {
-    if (!session?.user?.id) return;
-
-    const userId = session.user.id;
-
-    // start/end of today
-    const start = new Date();
-    start.setHours(0, 0, 0, 0);
-
-    const end = new Date(start);
-    end.setDate(end.getDate() + 1);
+    if (!effectiveAuthId) return;
 
     async function fetchComplianceRate() {
-      const date = start.toISOString().slice(0, 10);
       const { data, error } = await supabase
         .schema("relational")
         .from("history")
-        .select("authid, duration")
-        .eq("authid", userId)
+        .select("duration")
+        .eq("authid", effectiveAuthId);
 
-        if (error) {
-          console.error("fetchCompliance Rate error:", error);
-          return;
-        }
+      if (error) {
+        console.error("fetchComplianceRate error:", error);
+        return;
+      }
 
-        const total = data.length;
-        const compliance = data.filter(row => row.duration >= 20).length;
-        const percentage = total > 0 ? Math.round((compliance / total) * 100) : 0;
-        setComplianceRate(percentage);
+      const total = data?.length ?? 0;
+      const compliant = (data ?? []).filter((row) => row.duration >= 20).length;
+      const percentage = total > 0 ? Math.round((compliant / total) * 100) : 0;
+      setComplianceRate(percentage);
     }
 
     fetchComplianceRate();
-  }, [session]);
+  }, [effectiveAuthId]);
 
-  //for lifetime compliance card
   const complianceOnTrack = complianceRate >= 95;
   const complianceBadgeText = complianceOnTrack ? "On Track" : "Not On Track";
-  
-
-
-  //weekly average
-  const [weeklyAverage, setWeeklyAverageAllTime] = useState(0);
 
   useEffect(() => {
-    if (!session?.user?.id) return;
-    const userId = session.user.id;
+    if (!effectiveAuthId) return;
 
     function startOfWeekSunday(dateObj) {
       const d = new Date(dateObj);
       d.setHours(0, 0, 0, 0);
-      const dayOfWeek = d.getDay(); 
-      d.setDate(d.getDate() - dayOfWeek); 
+      const dayOfWeek = d.getDay();
+      d.setDate(d.getDate() - dayOfWeek);
       return d;
     }
 
@@ -153,7 +131,7 @@ export default function Body({ session }) {
         .schema("relational")
         .from("history")
         .select("day")
-        .eq("authid", userId);
+        .eq("authid", effectiveAuthId);
 
       if (error) {
         console.error("fetchWeeklyAverage error:", error);
@@ -169,93 +147,73 @@ export default function Body({ session }) {
       const washesPerWeek = {};
 
       data.forEach((row) => {
-        const dateObj = new Date(row.day + "T00:00:00"); //midnight
+        const dateObj = new Date(row.day + "T00:00:00");
         const weekStart = startOfWeekSunday(dateObj).toISOString().slice(0, 10);
-
         washesPerWeek[weekStart] = (washesPerWeek[weekStart] ?? 0) + 1;
       });
 
-      const weekCounts = Object.values(washesPerWeek); // only weeks w/data to account for vacation
+      const weekCounts = Object.values(washesPerWeek);
       const totalWashes = weekCounts.reduce((sum, c) => sum + c, 0);
       const numWeeks = weekCounts.length;
-
       const avg = numWeeks > 0 ? totalWashes / numWeeks : 0;
 
-      //.ceil to round up,
       setWeeklyAverageAllTime(Math.ceil(avg));
     }
 
     fetchWeeklyAverageAllTime();
-  }, [session]);
+  }, [effectiveAuthId]);
+
   const weeklyAverageOnTrack = weeklyAverage >= 700;
   const weeklyAverageBadgeText = weeklyAverageOnTrack ? "On Track" : "Not On Track";
 
-
-  //current streak
-  const [streak, setStreak] = useState(0);
-  const [longestStreak, setLongestStreak] = useState(0);
-
   useEffect(() => {
-    if (!session?.user?.id) return;
-    const userId = session.user.id;
+    if (!effectiveAuthId) return;
 
     async function fetchStreak() {
       try {
         const todayStr = new Date().toISOString().slice(0, 10);
 
-        //get hospitalid
         const { data: profile, error: profileError } = await supabase
           .schema("relational")
           .from("profiles")
           .select("hospitalid")
-          .eq("authid", userId)
+          .eq("authid", effectiveAuthId)
           .maybeSingle();
 
-        if (profileError) {
+        if (profileError || !profile?.hospitalid) {
           console.error("profile fetch error:", profileError);
           setStreak(0);
-          return;
-        }
-        if (!profile?.hospitalid) {
-          console.warn("No hospitalid found for user in profiles.");
-          setStreak(0);
+          setLongestStreak(0);
           return;
         }
 
-        const hospitalId = profile.hospitalid;
-
-        //get wash compliance metric for that hospital
         const { data: hospital, error: hospitalError } = await supabase
           .schema("relational")
           .from("hospitals")
           .select("dailywashrequirements")
-          .eq("hospitalid", hospitalId)
+          .eq("hospitalid", profile.hospitalid)
           .maybeSingle();
 
-        if (hospitalError) {
+        if (hospitalError || hospital?.dailywashrequirements == null) {
           console.error("hospital fetch error:", hospitalError);
           setStreak(0);
-          return;
-        }
-        if (!hospital?.dailywashrequirements && hospital?.dailywashrequirements !== 0) {
-          console.warn("No hospital row returned. (bad hospitalid or RLS)");
-          setStreak(0);
+          setLongestStreak(0);
           return;
         }
 
         const requirement = hospital.dailywashrequirements;
 
-        // count washes per day 
         const { data: historyRows, error: historyError } = await supabase
           .schema("relational")
           .from("history")
           .select("day")
-          .eq("authid", userId)
+          .eq("authid", effectiveAuthId)
           .lte("day", todayStr);
 
         if (historyError) {
           console.error("history fetch error:", historyError);
           setStreak(0);
+          setLongestStreak(0);
           return;
         }
 
@@ -264,7 +222,6 @@ export default function Body({ session }) {
           washesByDay[r.day] = (washesByDay[r.day] ?? 0) + 1;
         });
 
-        // current streak: start from today and go backwards
         let s = 0;
         const d = new Date();
         d.setHours(0, 0, 0, 0);
@@ -283,7 +240,6 @@ export default function Body({ session }) {
 
         setStreak(s);
 
-        // longest streak across all recorded days
         const sortedDays = Object.keys(washesByDay).sort();
 
         let longest = 0;
@@ -325,97 +281,85 @@ export default function Body({ session }) {
       } catch (e) {
         console.error("fetchStreak unexpected error:", e);
         setStreak(0);
+        setLongestStreak(0);
       }
     }
 
     fetchStreak();
-  }, [session]);
-
-
-  //today's compliance
-  
-  const [todayCompliance, setTodayCompliance] = useState("0/0");
+  }, [effectiveAuthId]);
 
   useEffect(() => {
-    if (!session?.user?.id) return;
-
-    const userId = session.user.id;
+    if (!effectiveAuthId) return;
 
     const start = new Date();
     start.setHours(0, 0, 0, 0);
-
     const date = start.toISOString().slice(0, 10);
 
     async function fetchTodayCompliance() {
-     const { data, error } = await supabase
+      const { data, error } = await supabase
         .schema("relational")
         .from("history")
-        //.select("authid, duration")
         .select("duration")
-        .eq("authid", userId)
+        .eq("authid", effectiveAuthId)
         .eq("day", date);
 
-        if (error) {
-          console.error("fetchCompliance Rate error:", error);
-          return;
-        }
+      if (error) {
+        console.error("fetchTodayCompliance error:", error);
+        return;
+      }
 
-        const total = data?.length ?? 0;
-        const compliance = (data ?? []).filter(row => row.duration >= 20).length;
-      setTodayCompliance(`${compliance}/${total}`);
+      const total = data?.length ?? 0;
+      const compliant = (data ?? []).filter((row) => row.duration >= 20).length;
+      setTodayCompliance(`${compliant}/${total}`);
     }
 
     fetchTodayCompliance();
-  }, [session]);
+  }, [effectiveAuthId]);
 
-  //weekly performance trend
   useEffect(() => {
-  if (!session?.user?.id) return;
+    if (!effectiveAuthId) return;
 
-  const userId = session.user.id;
-
-  function formatLocalDate(date) {
-    const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, "0");
-    const day = String(date.getDate()).padStart(2, "0");
-    return `${year}-${month}-${day}`;
-  }
-
-  async function fetchWeeklyGraphData() {
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-
-
-    const startOfWeek = new Date(today);
-    startOfWeek.setDate(today.getDate() - today.getDay());
-    startOfWeek.setHours(0, 0, 0, 0);
-
-    const endOfWeek = new Date(startOfWeek);
-    endOfWeek.setDate(startOfWeek.getDate() + 6);
-    endOfWeek.setHours(23, 59, 59, 999);
-
-    const startStr = formatLocalDate(startOfWeek);
-    const endStr = formatLocalDate(endOfWeek);
-
-    const { data, error } = await supabase
-      .schema("relational")
-      .from("history")
-      .select("day")
-      .eq("authid", userId)
-      .gte("day", startStr)
-      .lte("day", endStr);
-
-    if (error) {
-      console.error("fetchWeeklyGraphData error:", error);
-      return;
+    function formatLocalDate(date) {
+      const year = date.getFullYear();
+      const month = String(date.getMonth() + 1).padStart(2, "0");
+      const day = String(date.getDate()).padStart(2, "0");
+      return `${year}-${month}-${day}`;
     }
 
-    const washesByDay = {};
-    (data ?? []).forEach((row) => {
-      washesByDay[row.day] = (washesByDay[row.day] ?? 0) + 1;
-    });
+    async function fetchWeeklyGraphData() {
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
 
-    const orderedDays = [
+      const startOfWeek = new Date(today);
+      startOfWeek.setDate(today.getDate() - today.getDay());
+      startOfWeek.setHours(0, 0, 0, 0);
+
+      const endOfWeek = new Date(startOfWeek);
+      endOfWeek.setDate(startOfWeek.getDate() + 6);
+      endOfWeek.setHours(23, 59, 59, 999);
+
+      const startStr = formatLocalDate(startOfWeek);
+      const endStr = formatLocalDate(endOfWeek);
+
+      const { data, error } = await supabase
+        .schema("relational")
+        .from("history")
+        .select("day")
+        .eq("authid", effectiveAuthId)
+        .gte("day", startStr)
+        .lte("day", endStr);
+
+      if (error) {
+        console.error("fetchWeeklyGraphData error:", error);
+        return;
+      }
+
+      const washesByDay = {};
+      (data ?? []).forEach((row) => {
+        washesByDay[row.day] = (washesByDay[row.day] ?? 0) + 1;
+      });
+
+      const orderedDays = [
         { label: "Mon", offset: 1, target: 100 },
         { label: "Tue", offset: 2, target: 100 },
         { label: "Wed", offset: 3, target: 100 },
@@ -425,7 +369,7 @@ export default function Body({ session }) {
         { label: "Sun", offset: 0, target: 100 },
       ];
 
-    const weekData = orderedDays.map(({ label, offset, target }) => {
+      const weekData = orderedDays.map(({ label, offset, target }) => {
         const currentDate = new Date(startOfWeek);
         currentDate.setDate(startOfWeek.getDate() + offset);
 
@@ -444,69 +388,55 @@ export default function Body({ session }) {
     }
 
     fetchWeeklyGraphData();
-  }, [session]);
-
-
-
+  }, [effectiveAuthId]);
 
   return (
-/*     <div className="main">
-      <div className="searchbar2">
-        <input type="text" placeholder="Search" />
-        <div className="searchbtn">
-          <img
-            src="https://media.geeksforgeeks.org/wp-content/uploads/20221210180758/Untitled-design-(28).png"
-            className="icn srchicn"
-            alt="search-button"
-          />
-        </div>
-      </div> */
-
-            <div style={{
+    <div
+      style={{
         display: "grid",
         gridTemplateColumns: "1fr 1fr",
         gap: "24px",
         padding: "40px",
         background: "#f0f4f8",
-      }}>
-         <Card
-          title="Lifetime Compliance"
-          icon={<path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />}
-          value={complianceRate + "%"}
-          progress={complianceRate}
-          footerText="Target: 95% compliance"
-          footerBadge={complianceBadgeText}
-          accent="#0ea5e9"
-          iconBg="#f0f9ff"
-        />
-        <Card
-          title="Amount of Washes"
-          icon={<path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />}
-          value={String(washesToday ?? 0)}
-          footerText={washChangeText}
-          //footerBadge={washChangeText}
-          accent="#0ea5e9"
-          iconBg="#f0f9ff"
-        />
-        <Card
-          title="Weekly Average"
-          icon={<path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />}
-          value={String(weeklyAverage ?? 0)}
-          progress={Math.min(Number((((weeklyAverage ?? 0) / 700) * 100).toFixed(2)), 100)}
-          footerText="Goal: 700 washes/week"
-          footerBadge={weeklyAverageBadgeText}
-          accent="#0ea5e9"
-          iconBg="#f0f9ff"
-        />
-        <Card
-          title="Current Streak"
-          icon={<path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />}
-          value={String(streak ?? 0)}
-          footerText={`Largest streak: ${longestStreak}`}
-          accent="#0ea5e9"
-          iconBg="#f0f9ff"
-        />
-        <div style={{ gridColumn: "1 / -1", display: "flex", justifyContent: "center" }}>
+      }}
+    >
+      <Card
+        title="Lifetime Compliance"
+        icon={<path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />}
+        value={complianceRate + "%"}
+        progress={complianceRate}
+        footerText="Target: 95% compliance"
+        footerBadge={complianceBadgeText}
+        accent="#0ea5e9"
+        iconBg="#f0f9ff"
+      />
+      <Card
+        title="Amount of Washes"
+        icon={<path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />}
+        value={String(washesToday ?? 0)}
+        footerText={washChangeText}
+        accent="#0ea5e9"
+        iconBg="#f0f9ff"
+      />
+      <Card
+        title="Weekly Average"
+        icon={<path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />}
+        value={String(weeklyAverage ?? 0)}
+        progress={Math.min(Number((((weeklyAverage ?? 0) / 700) * 100).toFixed(2)), 100)}
+        footerText="Goal: 700 washes/week"
+        footerBadge={weeklyAverageBadgeText}
+        accent="#0ea5e9"
+        iconBg="#f0f9ff"
+      />
+      <Card
+        title="Current Streak"
+        icon={<path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />}
+        value={String(streak ?? 0)}
+        footerText={`Largest streak: ${longestStreak}`}
+        accent="#0ea5e9"
+        iconBg="#f0f9ff"
+      />
+      <div style={{ gridColumn: "1 / -1", display: "flex", justifyContent: "center" }}>
         <Card
           title="Today's Compliance"
           icon={<path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />}
@@ -515,16 +445,11 @@ export default function Body({ session }) {
           accent="#0ea5e9"
           iconBg="#f0f9ff"
         />
-        </div>
-       
-        {/* Chart spans both columns — inside the grid */}
-                <div style={{ gridColumn: "1 / -1" }}>
-                  <AdminChart data={adminData} width={800} />
-                </div>
-              
-              
       </div>
+
+      <div style={{ gridColumn: "1 / -1" }}>
+        <AdminChart data={adminData} width={800} />
+      </div>
+    </div>
   );
-};
-
-
+}
