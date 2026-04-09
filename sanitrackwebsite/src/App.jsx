@@ -123,7 +123,7 @@ if (session) {
           <Footer />
         </>
       } />
-      <Route path="/admin" element={<Admin />} />
+      <Route path="/admin" element={<Admin session={session} />} />
       <Route path="/app" element={<App />} />
     </Routes>
   )
