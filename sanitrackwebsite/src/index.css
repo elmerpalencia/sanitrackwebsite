@@ -1,23 +1,9 @@
-:root {
-  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
-  line-height: 1.5;
-  font-weight: 400;
-
-  color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
-
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-
 a {
   font-weight: 500;
   color: #646cff;
   text-decoration: inherit;
 }
+
 a:hover {
   color: #535bf2;
 }
@@ -46,9 +32,11 @@ button {
   cursor: pointer;
   transition: border-color 0.25s;
 }
+
 button:hover {
   border-color: #646cff;
 }
+
 button:focus,
 button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
@@ -59,10 +47,82 @@ button:focus-visible {
     color: #213547;
     background-color: #ffffff;
   }
+
   a:hover {
     color: #747bff;
   }
+
   button {
     background-color: #f9f9f9;
   }
+}
+
+
+/* Boxes css  */
+.box-container {
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 50px;
+  padding: 80px 0 80px; 
+}
+
+.box {
+  height: 130px;
+  width: 230px;
+  border-radius: 20px;
+  padding: 20px;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+
+  background-color: #172554;
+  color: white;
+
+  box-shadow: 3px 3px 10px rgba(0, 30, 87, 0.35);
+  cursor: pointer;
+  transition: transform 0.25s ease-in-out;
+}
+
+.box:hover {
+  transform: scale(1.06);
+}
+
+.box .text {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.topic {
+  font-size: 13px;
+  font-weight: 400;
+  letter-spacing: 1px;
+}
+
+.topic-heading {
+  font-size: 30px;
+  font-weight: 600;
+  letter-spacing: 2px;
+}
+
+/* responsive tweak */
+@media screen and (max-width: 500px) {
+  .box {
+    width: 90%;
+    max-width: 260px;
+  }
+}
+
+
+.conatainer {
+  display: flex;
+  gap: 20px;
+  align-items: center;
+}
+
+.text-item {
+  margin: 0;
 }

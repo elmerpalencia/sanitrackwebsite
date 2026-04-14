@@ -23,4 +23,5 @@ dist-ssr
 *.sln
 *.sw?
 
+# protecting api keys
 .env
