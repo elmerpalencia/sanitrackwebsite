@@ -36,7 +36,11 @@ export function AdminChart({ data, width = 560 }) {
     const index = Math.floor((point.x - MARGIN.left) / xScale.step());
     const d = chartData[Math.max(0, Math.min(index, chartData.length - 1))];
     if (!d) return;
-    showTooltip({ tooltipData: d, tooltipLeft: point.x, tooltipTop: point.y + 100 });
+    showTooltip({
+      tooltipData: d,
+      tooltipLeft: event.clientX + 12,
+      tooltipTop: event.clientY - 12,
+    });
   };
 
   const compliance = (d) => Math.round((d.actual / d.target) * 100);

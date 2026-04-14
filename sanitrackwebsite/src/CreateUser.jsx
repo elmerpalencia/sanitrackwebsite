@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import Header from './Components/Header.jsx'
 
 export default function CreateUser() {
   const [formData, setFormData] = useState({
@@ -38,11 +39,12 @@ export default function CreateUser() {
 
   return (
     <div className="create-user-root">
+
       <style>{`
         .create-user-root {
           min-height: 100vh;
           width: 100%;
-          background: linear-gradient(90deg, #ffffff 0%, #f3f9ff 100%);
+          margin-top: 0;
           display: flex;
           align-items: center;
           justify-content: center;
@@ -52,8 +54,7 @@ export default function CreateUser() {
         }
 
         .create-user-shell {
-          width: 100%;
-          max-width: 1100px;
+          max-width: 100%
           display: flex;
           flex-direction: column;
           align-items: center;
@@ -224,15 +225,6 @@ export default function CreateUser() {
           text-align: center;
         }
 
-        .info-note {
-          margin-top: 12px;
-          background: #f1f8ff;
-          padding: 10px;
-          border-radius: 8px;
-          color: #0b2b40;
-          font-size: 13px;
-        }
-
         @media (max-width: 640px) {
           .create-user-root {
             padding: 12px;
@@ -249,6 +241,8 @@ export default function CreateUser() {
       `}</style>
 
       <div className="create-user-shell">
+        <Header />
+
         <div className="create-user-brand">
           <div className="create-user-brand-inner">
             <img src="/logo.png" alt="SaniTrack Logo" />
@@ -332,13 +326,9 @@ export default function CreateUser() {
 
             {message && <div className="form-message">{message}</div>}
 
-            <div className="info-note">
-              <div>• Admin accounts should have management access</div>
-              <div>• Staff accounts should have standard user access</div>
             </div>
           </div>
         </div>
       </div>
-    </div>
   )
 }

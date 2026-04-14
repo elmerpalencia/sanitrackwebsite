@@ -2,9 +2,11 @@ import Footer from './Components/Footer.jsx'
 import Header from './Components/Header.jsx'
 import Body from './Components/Body.jsx'
 import { useEffect, useState } from 'react'
+import { supabase } from './supabaseClient.js'
 import './App.css'
 import { Routes, Route } from 'react-router-dom'
-import Admin from './AdminPage.jsx'
+import AdminPage from './AdminPage.jsx'
+import ChooseStaffPage from './ChooseStaffPage.jsx'
 import CreateUser from './CreateUser.jsx'
 import { Navigate } from 'react-router-dom'
 import { useLocation } from 'react-router-dom'
@@ -173,63 +175,62 @@ function App() {
   }
 
   async function handleSignIn() {
-  setAuthenticationError('')
-  setIsCheckingAccess(true)
+    setAuthenticationError('')
+    setIsCheckingAccess(true)
 
-  const { data, error } = await supabase.auth.signInWithPassword({
-    email,
-    password,
-  })
+    const { data, error } = await supabase.auth.signInWithPassword({
+      email,
+      password,
+    })
 
-  if (error) {
-    setAuthenticationError(error.message)
+    if (error) {
+      setAuthenticationError(error.message)
+      setIsCheckingAccess(false)
+      return
+    }
+
+    const userId = data?.user?.id
+
+    if (!userId) {
+      setAuthenticationError('Could not find authenticated user.')
+      setIsCheckingAccess(false)
+      return
+    }
+
+    const { data: profile, error: profileError } = await supabase
+      .schema('relational')
+      .from('profiles')
+      .select('name, role, authid')
+      .eq('authid', userId)
+      .single()
+
+    if (profileError || !profile) {
+      await supabase.auth.signOut()
+      setUserProfile(null)
+      setSession(null)
+      setAuthenticationError('No profile found for this account.')
+      setIsCheckingAccess(false)
+      return
+    }
+
+    const dbRole = profile.role?.toLowerCase()
+    const selectedRole = role?.toLowerCase()
+
+    if (dbRole === 'staff' && selectedRole === 'admin') {
+      await supabase.auth.signOut()
+      setUserProfile(null)
+      setSession(null)
+      setAuthenticationError('Staff accounts can only log into the Staff page')
+      setIsCheckingAccess(false)
+      return
+    }
+
+    setUserProfile(profile)
     setIsCheckingAccess(false)
-    return
   }
-
- /*  //keeps you logged in on a refresh
-  const userId = data?.user?.id
-
-  if (!userId) {
-    setAuthenticationError('Could not find authenticated user.')
-    setIsCheckingAccess(false)
-    return
-  }
-
-  const { data: profile, error: profileError } = await supabase
-    .schema('relational')
-    .from('profiles')
-    .select('name, role, authid')
-    .eq('authid', userId)
-    .single()
-
-  if (profileError || !profile) {
-    await supabase.auth.signOut()
-    setUserProfile(null)
-    setSession(null)
-    setAuthenticationError('No profile found for this account.')
-    setIsCheckingAccess(false)
-    return
-  }
-
-  const dbRole = profile.role?.toLowerCase()
-  const selectedRole = role?.toLowerCase()
-
-  if (dbRole === 'staff' && selectedRole === 'admin') {
-    await supabase.auth.signOut()
-    setUserProfile(null)
-    setSession(null)
-    setAuthenticationError('Staff accounts can only log into the Staff page')
-    setIsCheckingAccess(false)
-    return
-  }
-
-  setUserProfile(profile)
-  setIsCheckingAccess(false)
-}
 
   useEffect(() => {
-    
+
     supabase.auth.getSession().then(({ data: { session } }) => {
       setSession(session)
     })
@@ -241,7 +242,7 @@ function App() {
     })
 
     return () => subscription.unsubscribe()
-  }, []) */
+  }, [])
 
   useEffect(() => {
     if (!session?.user?.id) return
@@ -268,58 +269,48 @@ function App() {
 
   return (
     <Routes>
-      <Route path="/" element={
-        <>
-          <Header userProfile={userProfile} />
-          <Body session={session} />
-          <Footer />
-        </>
-      } />
-      <Route path="/admin" element={<Admin />} />
-      <Route path="/create-user" element={<CreateUser />} />
-      <Route path="/app" element={<App />} />
-    <Route
-      path="/"
-      element={
-        session && userProfile ? (
-          <DashboardPage
-            userProfile={userProfile}
-            session={session}
-            adminViewingStaff={adminViewingStaff}
-            viewedStaffId={viewedStaffId}
-            viewedStaffName={viewedStaffName}
-          />
-        ) : (
-          <HomePage
-            role={role}
-            email={email}
-            password={password}
-            authenticationError={authenticationError}
-            selectRole={selectRole}
-            setEmail={setEmail}
-            setPassword={setPassword}
-            handleSignIn={handleSignIn}
-          />
-        )
-      }
-    />
+      <Route
+        path="/"
+        element={
+          session && userProfile ? (
+            <DashboardPage
+              userProfile={userProfile}
+              session={session}
+              adminViewingStaff={adminViewingStaff}
+              viewedStaffId={viewedStaffId}
+              viewedStaffName={viewedStaffName}
+            />
+          ) : (
+            <HomePage
+              role={role}
+              email={email}
+              password={password}
+              authenticationError={authenticationError}
+              selectRole={selectRole}
+              setEmail={setEmail}
+              setPassword={setPassword}
+              handleSignIn={handleSignIn}
+            />
+          )
+        }
+      />
       <Route path="/admin" element={<AdminPage userProfile={userProfile} session={session} />} />
-      
-      
+      <Route path="/create-user" element={<CreateUser />}/>
 
-     <Route
-      path="/choose-staff"
-      element={
-        session ? (
-          <ChooseStaffPage session={session} />
-        ) : (
-          <Navigate to="/" replace />
-        )
-      }
-    />
+
+
+      <Route
+        path="/choose-staff"
+        element={
+          session ? (
+            <ChooseStaffPage session={session} />
+          ) : (
+            <Navigate to="/" replace />
+          )
+        }
+      />
     </Routes>
   )
 }
-}
 
-export default App;
+export default App

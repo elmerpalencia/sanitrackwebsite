@@ -4,6 +4,7 @@ import { headerStyles } from './styles';
 import { Link, useNavigate } from 'react-router-dom';
 import { supabase } from '../supabaseClient.js';
 
+
 export default function Header({ userProfile, adminViewingStaff = false, viewedStaffName = '' }) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const navigate = useNavigate();
@@ -88,14 +89,14 @@ export default function Header({ userProfile, adminViewingStaff = false, viewedS
                   {isAdmin && (
                     <>
                       <Link to="/admin" style={{ color: 'inherit', textDecoration: 'none' }}>
-                        Admins Only
+                        Admins View
                       </Link>
 
                       <Link to="/choose-staff" style={{ color: 'inherit', textDecoration: 'none' }}>
                         Choose Staff
                       </Link>
 
-                      <Link to="/" style={{ color: 'inherit', textDecoration: 'none' }}>
+                      <Link to="/create-user" style={{ color: 'inherit', textDecoration: 'none' }}>
                         Create New Member
                       </Link>
                     </>
