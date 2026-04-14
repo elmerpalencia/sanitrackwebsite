@@ -64,6 +64,7 @@ export default function Header({ userProfile, adminViewingStaff = false, viewedS
                     onClick={() => navigate('/admin')}
                     style={{
                       background: 'transparent',
+                      color: '#fff',
                      
                     }}
                   >
