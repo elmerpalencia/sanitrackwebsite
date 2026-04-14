@@ -143,11 +143,12 @@ export const cardStyles = `
     justify-content: center;
   }
   .card {
-    background: #ffffff;
+    background: #172554;
+;
     border-radius: 16px;
     padding: 28px;
     width: 300px;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.06), 0 4px 16px rgba(0,0,0,0.04);
+
     display: flex;
     flex-direction: column;
     gap: 16px;
@@ -162,7 +163,7 @@ export const cardStyles = `
     left: 0;
     right: 0;
     height: 3px;
-    background: var(--accent, #0d9488);
+    background: var(--accent, #FFFFFF);
     border-radius: 16px 16px 0 0;
     opacity: 0;
     transition: opacity 0.2s ease;
@@ -183,7 +184,7 @@ export const cardStyles = `
   .card-title {
     font-size: 13px;
     font-weight: 500;
-    color: #64748b;
+    color: #ffffff
     letter-spacing: 0.04em;
     text-transform: uppercase;
   }
@@ -208,7 +209,7 @@ export const cardStyles = `
   .card-value {
     font-size: 36px;
     font-weight: 600;
-    color: #0f172a;
+    color: #ffffff;
     line-height: 1;
     letter-spacing: -0.02em;
     margin-bottom: 6px;
@@ -278,6 +279,7 @@ export const cardStyles = `
 
 export const headerStyles = {
   header: {
+    position: 'relative',
     top: 0,
     zIndex: 50,
     background: '#172554',
@@ -478,9 +480,14 @@ export const footerStyles = {
     gap: '0.75rem',
     cursor: 'pointer'
   },
-  iconWrapper: {
-    position: 'relative'
-  },
+iconWrapper: {
+  width: '46px',
+  height: '46px',
+  borderRadius: '50%',
+  background: 'white',
+  padding: '6px',
+  boxShadow: '0 4px 12px rgba(2,6,23,0.06)',
+},
   brandTitle: {
     fontSize: '1.25rem',
     fontWeight: 'bold',

@@ -30,69 +30,23 @@ export default function Footer() {
         <div style={gridStyle}>
           
           {/* Brand section */}
-          <div style={footerStyles.brandSection}>
-            <div style={footerStyles.brandHeader}>
-              <div style={footerStyles.iconWrapper}>
-                <Droplets size={32} color="#22d3ee" />
-              </div>
-              <div>
-                <h3 style={footerStyles.brandTitle}>SaniTrack</h3>
-                <p style={footerStyles.subtitle}>Compliance Suite</p>
-              </div>
-            </div>
-            <p style={footerStyles.description}>
-              Enterprise-grade hand hygiene monitoring and compliance tracking for healthcare facilities.
-            </p>
-            <div style={footerStyles.badge}>
-              <Shield size={16} color="#10b981" />
-              <span>HIPAA Compliant</span>
-            </div>
-          </div>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+          <img
+            src="/logo.png"
+            alt="SaniTrack Logo"
+            style={{
+              width: '46px',
+              height: '46px',
+              borderRadius: '50%',
+              background: 'white',
+              padding: '6px',
+              boxShadow: '0 4px 12px rgba(2,6,23,0.06)'
+            }}
+          />
+          <h2 style={{ margin: 0, fontSize: '18px', color: '#fff' }}>SaniTrack: The Handwashing Compliance App</h2>
 
-          {/* Resources */}
-          <div style={footerStyles.resourcesSection}>
-            <h4 style={footerStyles.sectionHeader}>
-              <FileText size={16} />
-              Resources
-            </h4>
-            <ul style={footerStyles.list}>
-              {['Documentation', 'Best Practices', 'Case Studies', 'Integration Guide', 'API Reference', 'Support Center'].map((item) => (
-                <li key={item} style={footerStyles.listItem}>
-                  <a 
-                    href="#" 
-                    style={footerStyles.link}
-                    onMouseEnter={(e) => e.currentTarget.style.color = '#67e8f9'}
-                    onMouseLeave={(e) => e.currentTarget.style.color = '#cbd5e1'}
-                  >
-                    <span style={footerStyles.bullet}></span>
-                    {item}
-                  </a>
-                </li>
-              ))}
-            </ul>
-          </div>
         </div>
 
-        {/* Compliance badges */}
-        <div style={footerStyles.divider}>
-          <div style={footerStyles.complianceBadges}>
-            <div style={footerStyles.complianceBadge}>
-              <Lock size={12} color="#10b981" />
-              <span>SOC 2 Type II</span>
-            </div>
-            <div style={footerStyles.complianceBadge}>
-              <Shield size={12} color="#10b981" />
-              <span>HIPAA Compliant</span>
-            </div>
-            <div style={footerStyles.complianceBadge}>
-              <AlertCircle size={12} color="#10b981" />
-              <span>FDA Registered</span>
-            </div>
-            <div style={footerStyles.complianceBadge}>
-              <Shield size={12} color="#10b981" />
-              <span>ISO 27001</span>
-            </div>
-          </div>
         </div>
 
         {/* Bottom bar */}
@@ -101,34 +55,6 @@ export default function Footer() {
             <p style={footerStyles.copyright}>
               © {currentYear} SaniTrack Systems. All rights reserved.
             </p>
-            <div style={footerStyles.footerLinks}>
-              <a 
-                href="#" 
-                style={footerStyles.footerLink}
-                onMouseEnter={(e) => e.currentTarget.style.color = '#67e8f9'}
-                onMouseLeave={(e) => e.currentTarget.style.color = '#94a3b8'}
-              >
-                Privacy Policy
-              </a>
-              <span style={{ color: '#334155' }}>•</span>
-              <a 
-                href="#" 
-                style={footerStyles.footerLink}
-                onMouseEnter={(e) => e.currentTarget.style.color = '#67e8f9'}
-                onMouseLeave={(e) => e.currentTarget.style.color = '#94a3b8'}
-              >
-                Terms of Service
-              </a>
-              <span style={{ color: '#334155' }}>•</span>
-              <a 
-                href="#" 
-                style={footerStyles.footerLink}
-                onMouseEnter={(e) => e.currentTarget.style.color = '#67e8f9'}
-                onMouseLeave={(e) => e.currentTarget.style.color = '#94a3b8'}
-              >
-                Cookie Settings
-              </a>
-            </div>
           </div>
         </div>
         </div>
