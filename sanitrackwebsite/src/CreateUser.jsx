@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import Header from './Components/Header.jsx'
+import { supabase } from './supabaseClient.js'
 
 export default function CreateUser() {
   const [formData, setFormData] = useState({
@@ -10,6 +11,7 @@ export default function CreateUser() {
   })
 
   const [message, setMessage] = useState('')
+  const [loading, setLoading] = useState(false)
 
   function handleChange(e) {
     setFormData({
@@ -25,17 +27,66 @@ export default function CreateUser() {
     })
   }
 
-  function handleSubmit(e) {
-    e.preventDefault()
+  async function handleSubmit(e) {
+  e.preventDefault()
 
-    if (!formData.name || !formData.email || !formData.password) {
-      setMessage('Please fill out all fields.')
-      return
+  if (
+    !formData.name ||
+    !formData.email ||
+    !formData.password
+  ) {
+    setMessage('Please fill out all fields.')
+    return
+  }
+
+  try {
+    setLoading(true)
+    setMessage('')
+
+    const { data: authData, error: authError } = await supabase.auth.signUp({
+      email: formData.email,
+      password: formData.password,
+    })
+
+    if (authError) {
+      throw authError
     }
 
-    console.log('Create user:', formData)
-    setMessage(`User "${formData.name}" is ready to be created as ${formData.role}.`)
+    const userId = authData?.user?.id
+
+    if (!userId) {
+      throw new Error('User created, but no auth ID was returned.')
+    }
+
+    const { error: profileError } = await supabase
+      .schema('relational')
+      .from('profiles')
+      .insert([
+        {
+          name: formData.name,
+          role: formData.role,
+          authid: userId,
+        },
+      ])
+
+    if (profileError) {
+      throw profileError
+    }
+
+    setMessage(`User "${formData.name}" was created successfully.`)
+
+    setFormData({
+      name: '',
+      email: '',
+      password: '',
+      role: 'admin',
+    })
+  } catch (error) {
+    setMessage(error.message || 'Failed to create user.')
+  } finally {
+    setLoading(false)
   }
+}
 
   return (
     <div className="create-user-root">
@@ -241,7 +292,7 @@ export default function CreateUser() {
       `}</style>
 
       <div className="create-user-shell">
-        <Header />
+        <Header adminViewingStaff={true} />
 
         <div className="create-user-brand">
           <div className="create-user-brand-inner">
