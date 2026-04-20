@@ -14,6 +14,7 @@ function Admin({ session, userProfile }) {
   const [activeStaff, setActiveStaff] = useState(0);// ← state for active staff
   const [staffCompliance, setStaffCompliance] = useState(0); // ← state for staff compliance
   const [topPerformer, setTopPerformer] = useState("Loading..."); // ← state for top performer
+  const [washChangeText, setWashChangeText] = useState("No change from yesterday"); // ← state for wash change text, this is for the footer of the total washes card
 
 
   //chart info
@@ -34,12 +35,28 @@ function Admin({ session, userProfile }) {
   useEffect(() => {
     if (!session?.user?.id) return;
 
+    function formatLocalDate(date) {
+      const year = date.getFullYear();
+      const month = String(date.getMonth() + 1).padStart(2, "0");
+      const day = String(date.getDate()).padStart(2, "0");
+      return `${year}-${month}-${day}`;
+    }
+
     async function fetchAdminStats() {
       //for total washes of all the staff
       const { count, error } = await supabase
         .schema("relational")
         .from("history")
         .select("historyid", { count: "exact", head: true });
+
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+
+      const yesterday = new Date(today);
+      yesterday.setDate(today.getDate() - 1);
+
+      const todayStr = formatLocalDate(today);
+      const yesterdayStr = formatLocalDate(yesterday);
 
       if (error) {
         console.error("fetchTotalWashes error:", error);
@@ -79,6 +96,38 @@ function Admin({ session, userProfile }) {
         const percent = total > 0 ? Math.round((compliant / total) * 100) : 0
 
         setStaffCompliance(percent);
+      }
+
+      //for todays and yesterdays washes, to compare and put in the footer of the total washes card
+      const { count: todayCount, error: todayError } = await supabase
+        .schema("relational")
+        .from("history")
+        .select("historyid", { count: "exact", head: true })
+        .eq("day", todayStr);
+
+      const { count: yesterdayCount, error: yesterdayError } = await supabase
+        .schema("relational")
+        .from("history")
+        .select("historyid", { count: "exact", head: true })
+        .eq("day", yesterdayStr);
+
+      
+      //if and else for the wash change text, comparing today and yesterday counts, and handling errors if they occur in either query
+      if (todayError || yesterdayError) {
+        console.error("fetchWashChange error:", todayError || yesterdayError);
+        setWashChangeText("Unable to load yesterday comparison");
+      } 
+      else { 
+        const diff = (todayCount ?? 0) - (yesterdayCount ?? 0);
+        if (diff > 0) {
+          setWashChangeText(`Up ${diff} washes from yesterday`);
+        } 
+        else if (diff < 0) {
+          setWashChangeText(`Down ${Math.abs(diff)} washes from yesterday`);
+        } 
+        else {
+          setWashChangeText("No change from yesterday");
+        }
       }
 
     
@@ -243,7 +292,7 @@ function Admin({ session, userProfile }) {
           title="Amount of Washes"
           icon={<path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />}
           value={totalWashes} // ← display total washes, this is for real changing data, not hardcoded
-          footerText="Up 234 washes from yesterday"
+          footerText={washChangeText} // ← display wash change text, this is for real changing data, not hardcoded
           footerBadge="On Track"
           accent="#0ea5e9"
           iconBg="#f0f9ff"
