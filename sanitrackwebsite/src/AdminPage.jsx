@@ -284,7 +284,7 @@ function Admin({ session, userProfile }) {
           value={`${staffCompliance}%`} // ← display staff compliance percentage, this is for real changing data, not hardcoded
           progress={staffCompliance} // ← use staff compliance for progress bar
           footerText="Target: 95% compliance"
-          footerBadge="On Track"
+          footerBadge={staffCompliance >= 95 ? "On Track" : "Not On Track"}
           accent="#0ea5e9"
           iconBg="#f0f9ff"
         />
@@ -293,7 +293,6 @@ function Admin({ session, userProfile }) {
           icon={<path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />}
           value={totalWashes} // ← display total washes, this is for real changing data, not hardcoded
           footerText={washChangeText} // ← display wash change text, this is for real changing data, not hardcoded
-          footerBadge="On Track"
           accent="#0ea5e9"
           iconBg="#f0f9ff"
         />
